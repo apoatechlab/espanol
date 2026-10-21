@@ -22,11 +22,43 @@
 | 14 | no me gusta**ba** nada los inviernos | no me gusta**ban** nada los inviernos | gustar | Глагол согласуется с тем, что нравится: los inviernos → gustaban. |
 | 15 | hay poc**o** luz | hay poc**a** luz | Род | luz — женский род (la luz) → poca luz. |
 
+## Сочинение 2: «Mi vida cotidiana y el español» (письмо Anabel, A2, октябрь 2026)
+
+| # | Было | Правильно | Тип | Правило |
+|---|------|-----------|-----|---------|
+| 16 | gracias por **su** email | gracias por **tu** email | Регистр | Начал на «tú» (¡Hola, Anabel!) — держи tú: tu, te, ti. |
+| 17 | es importante **para** conocernos | es importante conocernos | Es + прил. + инфинитив | Инфинитив — подлежащее, предлог не нужен. |
+| 18 | méjor | mejor | Ударение | Aguda на -r — тильда не нужна. |
+| 19 | vivo en Barcelona hace 3 años | vivo en Barcelona **desde hace** 3 años | hace / desde hace | Действие продолжается сейчас → desde hace. Hace — момент в прошлом (Llegué hace 3 años). |
+| 20 | deserallodor | desarrollador | Орфография | de-sa-rro-lla-dor. |
+| 21 | financial | financiero | Лексика | Калька с английского. |
+| 22 | en linea / aqui | en l**í**nea / aqu**í** | Ударение | línea — тильда на í; aquí — aguda на гласную. |
+| 23 | teletrabajador**as** | teletrabajador**es** | Род | О себе / о группе в целом — мужской род мн. ч. |
+| 24 | **Sin embargo** me encanta… | **Además,** me encanta… | Связки | Sin embargo — противопоставление. Если мысль продолжается в ту же сторону — además. |
+| 25 | cuidad | ciudad | Орфография | ci-u-dad: сначала i, потом u. |
+| 26 | aficion | afici**ó**n | Ударение | Aguda на -n — тильда. |
+| 27 | mi afición es bici | mi afición es **la** bici / el ciclismo | Артикль | Конкретная вещь в роли подлежащего — с артиклем. |
+| 28 | voy a escuela | voy a **la** escuela | Артикль | Конкретное известное место — с артиклем: a la escuela (al trabajo, al parque). |
+| 29 | en cuidad | en **la** ciudad | Артикль + орфография | en la ciudad. |
+| 30 | bici carretera | bici **de** carretera | Предлог de | Тип предмета через другое существительное — с de: bici de carretera, clase de español. |
+| 31 | En futuro | En **el** futuro | Артикль | en el futuro, en el pasado. |
+| 32 | estudio español hace un año | estudio español **desde hace** un año | hace / desde hace | См. №19 — продолжается сейчас. |
+| 33 | dificil / para mi | dif**í**cil / para m**í** | Ударение | difícil — llana на -l → тильда. mí (мне/меня) с тильдой, mi (мой) без. |
+| 34 | es difícil **de** hablar | es difícil hablar | Es + прил. + инфинитив | См. №17 — без предлога. |
+| 35 | hablar pasado | hablar **en** pasado | Предлог en | en pasado, en presente, en español. |
+| 36 | **Soy** muy interesate | **Estoy** muy interesado | ser / estar + лексика | Заинтересован — состояние → estar. Форма: interesado (причастие). |
+| 37 | espero **que aprendo** | espero **aprender** | Инфинитив | Один и тот же субъект → инфинитив. Разные субъекты → que + subjuntivo (Espero que tú aprendas). |
+
 ## Повторяющиеся темы
 
-- **Род существительных на -e / -z**: clase, luz (женский). — №1, №15
-- **porque / por qué** — №4, №12 (дважды!)
-- **Тильда**: esdrújulas, agudas на -n/-s/гласную — №2, №7
-- **Артикль**: профессия без артикля; общие понятия с артиклем — №5, №9, №13
+- **Артикль** — главная тема: профессия без артикля (Era consultor); общие понятия и конкретные места с артиклем (las mañanas, a la escuela, en la ciudad, en el futuro, la bici, hasta la mañana) — №5, №9, №13, №27, №28, №29, №31
+- **Тильда**: perdóname, también, aquí, línea, afición, difícil, mí; лишняя: méjor — №2, №7, №18, №22, №26, №33
+- **porque / por qué** — №4, №12
+- **desde hace** для того, что продолжается сейчас — №19, №32
+- **Es + прилагательное + инфинитив без предлога** (es importante conocernos, es difícil hablar) — №17, №34
+- **Род**: la clase, la luz; teletrabajadores — №1, №15, №23
+- **Предлоги**: al mismo tiempo, pasear al perro, mudarse a, bici de carretera, en pasado — №3, №6, №8, №30, №35
 - **gustar во мн. ч.** — №14
-- **Предлоги и управление**: al mismo tiempo, pasear al perro, mudarse a — №3, №6, №8
+- **ser / estar**: estoy interesado — №36
+- **Инфинитив при одном субъекте**: espero aprender — №37
+- **Орфография**: ciudad (дважды), desarrollador — №20, №25, №29
