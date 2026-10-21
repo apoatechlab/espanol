@@ -47,7 +47,7 @@
 | 34 | es difícil **de** hablar | es difícil hablar | Es + прил. + инфинитив | См. №17 — без предлога. |
 | 35 | hablar pasado | hablar **en** pasado | Предлог en | en pasado, en presente, en español. |
 | 36 | **Soy** muy interesate | **Estoy** muy interesado | ser / estar + лексика | Заинтересован — состояние → estar. Форма: interesado (причастие). |
-| 37 | espero **que aprendo** | espero **aprender** | Инфинитив | Один и тот же субъект → инфинитив. Разные субъекты → que + subjuntivo (Espero que tú aprendas). |
+| 37 | espero **que aprendo** | espero **aprender** | Инфинитив | Я надеюсь и я учу → сразу инфинитив, без que. |
 
 ## Упражнение «¡Toma galleta!» (артикли, Gramática básica, гл. 5)
 

@@ -81,7 +81,7 @@ var RULES = {
   tiempo: ["Артикль: en el futuro", "en el futuro, en el pasado, la próxima semana, el año que viene — с артиклем."],
   en_modo:["en pasado, en español", "Время и язык речи — с en: hablar en pasado, escribir en español, está en presente."],
   interes:["estoy interesado", "Заинтересован — состояние → estar interesado (причастие). Интересный — ser interesante: el libro es interesante."],
-  inf:    ["Один субъект → инфинитив", "Если я надеюсь/хочу и я же делаю — инфинитив: espero aprender, quiero hablar. Если субъекты разные — que + subjuntivo: espero que tú aprendas, quiero que mi hija hable."],
+  inf:    ["Espero + инфинитив", "Если я надеюсь/хочу/мне нужно и я же это делаю — сразу инфинитив, без que и без предлога: espero aprender, quiero hablar, necesito practicar."],
   cero:   ["Без артикля: неопределённое кол-во", "Неисчисляемое или мн. ч. без уточнения (какое-то количество, вообще) — без артикля: vende galletas y bombones, con leche y harina, ¿tienes hijos?"],
   def:    ["Артикль: известное, конкретное", "Конкретное, уже известное или уточнённое — с артиклем: las galletas de Enriqueta, el azúcar (тот, что она использует), a los productores. Unos/una — вводим новое: una ONG, unos granjeros del sur de Brasil."],
   pose:   ["Без артикля с este/su", "С указательными и притяжательными перед словом артикль не ставится: compra estos productos, en su tienda, de su propia granja. Но: una amiga mía."]
@@ -192,9 +192,9 @@ var BANK = [
  ["tu_ud","Buenos días, señor García. ¿En qué ___ puedo ayudar?","le","te","lo"],
  ["tu_ud","Hola, Pablo, ¿qué tal ___ fin de semana?","tu","su","tú"],
 
- ["es_inf","Es importante ___ conocernos.",B+" (предлога)","para","de"],
- ["es_inf","Para mí es difícil ___ hablar en pasado.",B+" (предлога)","de","para"],
- ["es_inf","Es necesario ___ practicar cada día.",B+" (предлога)","de","para"],
+ ["es_inf","Es importante ___ conocernos.","— без предлога","para","de"],
+ ["es_inf","Para mí es difícil ___ hablar en pasado.","— без предлога","de","para"],
+ ["es_inf","Es necesario ___ practicar cada día.","— без предлога","de","para"],
  ["es_inf","Выберите правильную фразу:","Es bueno dormir ocho horas.","Es bueno para dormir ocho horas.","Es bueno de dormir ocho horas."],
  ["es_inf","Выберите правильную фразу:","Es fácil aprender palabras nuevas.","Es fácil de aprender palabras nuevas.","Es fácil para aprender palabras nuevas."],
 
@@ -254,11 +254,11 @@ var BANK = [
  ["interes","La película ___ muy interesante.","es","está","tiene"],
  ["interes","Выберите правильную фразу:","Estoy muy interesado en el curso.","Soy muy interesado en el curso.","Soy muy interesate en el curso."],
 
- ["inf","Espero ___ mucho en este curso.","aprender","que aprendo","que aprenda"],
- ["inf","Espero que tú ___ mucho.","aprendas","aprender","aprendes"],
- ["inf","Quiero ___ español con fluidez.","hablar","que hablo","que hable"],
- ["inf","Quiero que mi hija ___ español.","hable","hablar","habla"],
- ["inf","Necesito ___ más los tiempos del pasado.","practicar","que practico","que practique"],
+ ["inf","Espero ___ mucho en este curso.","aprender","que aprendo","de aprender"],
+ ["inf","Quiero ___ español con fluidez.","hablar","que hablo","de hablar"],
+ ["inf","Necesito ___ más los tiempos del pasado.","practicar","que practico","de practicar"],
+ ["inf","Me gustaría ___ el B1 el año que viene.","hacer","que hago","hago"],
+ ["inf","Выберите правильную фразу:","Espero aprender mucho este año.","Espero que aprendo mucho este año.","Espero de aprender mucho este año."],
 
  ["cero","En su tienda no solo vende ___ galletas.",B,"las","unas"],
  ["cero","…sino también ___ bombones de chocolate de Guatemala.",B,"unos","los"],
@@ -332,7 +332,7 @@ function render() {
   answered = false; header();
   if (pos >= deck.length) { result(); return; }
   cur = deck[pos];
-  var h = '<div class="chip">' + RULES[cur.g][0] + '</div><p class="q">' + esc(cur.q).replace(/___/g, '<span class="gap">&nbsp;</span>') + '</p>';
+  var h = '<p class="q">' + esc(cur.q).replace(/___/g, '<span class="gap">&nbsp;</span>') + '</p>';
   for (var i = 0; i < cur.opts.length; i++)
     h += '<button class="choice" id="c' + i + '" onclick="pick(' + i + ')"><span class="L">' + LETTERS[i] + '</span>' + esc(cur.opts[i].t) + '</button>';
   $("app").innerHTML = h + '<div id="fb"></div>';
@@ -347,7 +347,7 @@ function pick(k) {
   }
   if (ok) right++; else wrong.push({ id: cur.id, q: cur.q, c: cur.c, y: cur.opts[k].t });
   var last = pos === deck.length - 1;
-  $("fb").innerHTML = '<div class="explain"><span class="verdict">' + (ok ? "✓ Верно" : "✗ Правильно: " + esc(cur.c)) + '</span>' + RULES[cur.g][1] + '</div>' +
+  $("fb").innerHTML = '<div class="explain"><span class="verdict">' + (ok ? "✓ Верно" : "✗ Правильно: " + esc(cur.c)) + '</span><div class="chip">' + RULES[cur.g][0] + '</div><br>' + RULES[cur.g][1] + '</div>' +
     '<button class="big" onclick="next()">' + (last ? "Результат" : "Дальше →") + '</button>';
   header();
 }
