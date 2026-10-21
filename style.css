@@ -1,0 +1,33 @@
+/* E-ink friendly: black on white, no web fonts, large tap targets, no animation */
+body { margin: 0 auto; max-width: 40em; padding: 1em; background: #fff; color: #000;
+  font-family: Georgia, "Times New Roman", serif; font-size: 20px; line-height: 1.5; }
+h1 { font-size: 1.8em; margin: 0.2em 0; }
+h2 { font-size: 1.2em; margin-top: 1.5em; border-bottom: 2px solid #000; }
+a { color: #000; }
+.lead, .note { color: #333; }
+.note { font-size: 0.85em; }
+.list { list-style: none; padding: 0; }
+.list li { padding: 0.6em 0; border-bottom: 1px solid #999; }
+.list a { font-size: 1.15em; font-weight: bold; }
+.back { font-size: 0.9em; }
+.meta { font-size: 0.9em; margin: 0.5em 0 1em; }
+.card { border: 2px solid #000; padding: 1em; }
+.topic { font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.05em; }
+.prompt { font-size: 1.25em; margin: 0.5em 0 1em; }
+.gap { display: inline-block; min-width: 3em; border-bottom: 2px solid #000; }
+.opt, .btn { display: block; width: 100%; box-sizing: border-box; font: inherit; font-size: 1.1em;
+  text-align: left; padding: 0.6em 0.8em; margin: 0 0 0.5em; background: #fff; color: #000;
+  border: 2px solid #000; border-radius: 0; }
+.btn { text-align: center; font-weight: bold; background: #000; color: #fff; margin-top: 0.8em; }
+.opt.ok { border-width: 5px; font-weight: bold; }
+.opt.ok:after { content: "  \2713"; }
+.opt.bad { text-decoration: line-through; }
+.inp { width: 100%; box-sizing: border-box; font: inherit; font-size: 1.1em; padding: 0.5em;
+  border: 2px solid #000; border-radius: 0; background: #fff; color: #000; }
+.accents { margin: 0.5em 0; }
+.accents button { font: inherit; font-size: 1.1em; width: 2.4em; height: 2.2em; margin: 0 0.2em 0.3em 0;
+  background: #fff; color: #000; border: 1px solid #000; border-radius: 0; }
+.fb { margin-top: 1em; padding: 0.7em; border: 1px dashed #000; }
+.fb b { display: block; }
+.score { font-size: 3em; font-weight: bold; margin: 0.2em 0; }
+.review li { margin-bottom: 0.6em; }

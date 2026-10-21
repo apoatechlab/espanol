@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тест A2 №1</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<p class="back"><a href="index.html">&larr; Все материалы</a></p>
+<h1>Тест A2 №1</h1>
+<div class="meta" id="meta"></div>
+<div class="card" id="card">Загрузка…</div>
+
+<script>
+// ES5 only: the Kindle browser is an old WebKit.
+var QUESTIONS = [
+  { t:"ser / estar", q:"Mi hermana ___ médica en un hospital de Barcelona.", o:["es","está","hay"], a:0,
+    e:"Профессия — постоянная характеристика, поэтому ser." },
+  { t:"ser / estar", q:"Hoy no voy a trabajar, ___ muy cansado.", o:["soy","estoy","tengo"], a:1,
+    e:"Временное состояние — estar." },
+  { t:"ser / estar", q:"La reunión ___ en la sala 3.", o:["es","está"], a:0,
+    e:"Место проведения события (reunión, fiesta, concierto) — ser. Место предмета или человека — estar." },
+  { t:"Pretérito indefinido", q:"Ayer nosotros ___ (comer) en un restaurante del Born.", input:["comimos"],
+    e:"comer → comimos. «Ayer» — законченное действие в прошлом, indefinido." },
+  { t:"Pretérito indefinido", q:"El verano pasado yo ___ (ir) a Sevilla.", input:["fui"],
+    e:"ir в indefinido: fui, fuiste, fue, fuimos, fuisteis, fueron (те же формы, что у ser)." },
+  { t:"Pretérito indefinido", q:"¿Qué ___ (hacer) tú el fin de semana?", input:["hiciste"],
+    e:"hacer → hice, hiciste, hizo… Неправильная основа hic-." },
+  { t:"Imperfecto / indefinido", q:"Cuando ___ niño, vivía en un pueblo pequeño.", o:["fui","era","estuve"], a:1,
+    e:"Описание прошлого, фон («когда я был ребёнком») — imperfecto: era." },
+  { t:"Imperfecto / indefinido", q:"Leía un libro cuando ___ el teléfono.", o:["sonaba","sonó","ha sonado"], a:1,
+    e:"Фон (leía) — imperfecto, а внезапное действие, которое его прервало, — indefinido: sonó." },
+  { t:"Pretérito perfecto", q:"Esta mañana ___ (yo, desayunar) muy temprano.", input:["he desayunado"],
+    e:"«Esta mañana», «hoy», «esta semana» — период, который ещё не закончился: в Испании обычно perfecto (haber + participio)." },
+  { t:"Participio", q:"¿Ya has ___ (ver) la nueva película?", input:["visto"],
+    e:"Неправильные причастия: ver → visto, hacer → hecho, decir → dicho, escribir → escrito, poner → puesto, volver → vuelto." },
+  { t:"por / para", q:"Este regalo es ___ mi hija.", o:["por","para"], a:1,
+    e:"Адресат, назначение — para." },
+  { t:"por / para", q:"Gracias ___ tu ayuda.", o:["por","para"], a:0,
+    e:"Причина — por. Gracias por…" },
+  { t:"por / para", q:"Paseamos ___ el parque Güell toda la tarde.", o:["por","para"], a:0,
+    e:"Перемещение по/через место — por." },
+  { t:"gustar", q:"A mis padres no les ___ el café sin azúcar.", o:["gusta","gustan","gustamos"], a:0,
+    e:"Глагол согласуется с тем, что нравится (el café — ед. ч.), а не с тем, кому: gusta." },
+  { t:"gustar", q:"¿___ gustan los perros?", o:["Te","Tú","Ti"], a:0,
+    e:"С gustar — косвенное местоимение: me, te, le, nos, os, les." },
+  { t:"Pronombres", q:"— ¿Has comprado el pan? — Sí, ya ___ he comprado.", o:["la","lo","le"], a:1,
+    e:"el pan — мужской род, прямое дополнение: lo." },
+  { t:"Pronombres", q:"— ¿Le das las llaves a Marta? — Sí, ___ doy ahora.", o:["le las","se las","las le"], a:1,
+    e:"le/les перед lo, la, los, las превращается в se: se las doy." },
+  { t:"Comparativos", q:"Madrid es ___ grande ___ Barcelona.", o:["más … que","más … de","tan … que"], a:0,
+    e:"Сравнение: más/menos + прил. + que. Tan … como — для равенства." },
+  { t:"ir a + infinitivo", q:"Mañana ___ (nosotros) visitar a los abuelos.", input:["vamos a"],
+    e:"Ближайшее будущее: ir (в нужной форме) + a + инфинитив → vamos a visitar." },
+  { t:"Verbos reflexivos", q:"Normalmente mi hija ___ (acostarse) a las nueve.", input:["se acuesta"],
+    e:"acostarse — возвратный и с чередованием o → ue: se acuesta." }
+];
+
+var ACC = { "á":"a","é":"e","í":"i","ó":"o","ú":"u","ü":"u","ñ":"n" };
+function norm(s) { return s.replace(/^\s+|\s+$/g,"").toLowerCase().replace(/\s+/g," ").replace(/[.!?¿¡]/g,""); }
+function strip(s) { return s.replace(/[áéíóúüñ]/g, function(c){ return ACC[c]; }); }
+function esc(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function $(id) { return document.getElementById(id); }
+
+var i = 0, results = [], answered = false;
+
+function countRight() { var n = 0; for (var k = 0; k < results.length; k++) if (results[k] && results[k].ok) n++; return n; }
+
+function meta() {
+  $("meta").innerHTML = (i < QUESTIONS.length ? "Вопрос " + (i+1) + " из " + QUESTIONS.length : "Готово") +
+    " · верно: " + countRight();
+}
+
+function render() {
+  answered = false;
+  meta();
+  if (i >= QUESTIONS.length) { result(); return; }
+  var Q = QUESTIONS[i];
+  var h = '<div class="topic">' + Q.t + '</div><p class="prompt">' +
+    esc(Q.q).replace("___", '<span class="gap">&nbsp;</span>') + '</p>';
+  if (Q.input) {
+    h += '<input class="inp" id="ans" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">';
+    h += '<div class="accents">';
+    var letters = ["á","é","í","ó","ú","ñ","ü"];
+    for (var k = 0; k < letters.length; k++) h += '<button type="button" onclick="ins(\'' + letters[k] + '\')">' + letters[k] + '</button>';
+    h += '</div><button class="btn" id="check" onclick="checkInput()">Проверить</button>';
+  } else {
+    for (var j = 0; j < Q.o.length; j++)
+      h += '<button class="opt" id="o' + j + '" onclick="choose(' + j + ')">' + esc(Q.o[j]) + '</button>';
+  }
+  h += '<div id="fb"></div>';
+  $("card").innerHTML = h;
+}
+
+function ins(c) { var el = $("ans"); if (el && !el.disabled) el.value += c; }
+
+function choose(k) {
+  if (answered) return;
+  var Q = QUESTIONS[i];
+  for (var j = 0; j < Q.o.length; j++) {
+    var b = $("o" + j); b.disabled = true;
+    if (j === Q.a) b.className = "opt ok"; else if (j === k) b.className = "opt bad";
+  }
+  finish(k === Q.a, Q.o[k], Q.o[Q.a], false);
+}
+
+function checkInput() {
+  if (answered) return;
+  var el = $("ans"), v = el.value;
+  if (!norm(v)) return;
+  var Q = QUESTIONS[i], n = norm(v), ok = false, near = false;
+  for (var k = 0; k < Q.input.length; k++) {
+    if (norm(Q.input[k]) === n) ok = true;
+    else if (strip(norm(Q.input[k])) === strip(n)) near = true;
+  }
+  el.disabled = true; $("check").style.display = "none";
+  finish(ok, norm(v), Q.input[0], near);
+}
+
+function finish(ok, given, correct, near) {
+  answered = true;
+  results[i] = { ok: ok, given: given, correct: correct };
+  var head = ok ? "✓ Верно" : near ? "Почти: проверьте ударение — " + esc(correct) : "✗ Правильно: " + esc(correct);
+  var last = i === QUESTIONS.length - 1;
+  $("fb").innerHTML = '<div class="fb"><b>' + head + '</b>' + QUESTIONS[i].e + '</div>' +
+    '<button class="btn" onclick="next()">' + (last ? "Результат" : "Дальше") + '</button>';
+  meta();
+}
+
+function next() { i++; render(); window.scrollTo(0, 0); }
+
+function result() {
+  var s = countRight(), total = QUESTIONS.length;
+  var verdict = s >= 17 ? "Отлично, уровень A2 уверенный." : s >= 12 ? "Хорошая база. Ниже — разбор ошибок." : "Есть что подтянуть — разберите ошибки и попробуйте снова.";
+  var h = '<div class="score">' + s + ' / ' + total + '</div><p>' + verdict + '</p>';
+  var wrong = "";
+  for (var k = 0; k < total; k++) {
+    var r = results[k];
+    if (!r.ok) wrong += '<li>' + esc(QUESTIONS[k].q).replace("___", "<b>" + esc(r.correct) + "</b>") + '<br>Ваш ответ: ' + esc(r.given) + '</li>';
+  }
+  if (wrong) h += '<ul class="review">' + wrong + '</ul>';
+  h += '<button class="btn" onclick="restart()">Пройти заново</button>';
+  $("card").innerHTML = h;
+}
+
+function restart() { i = 0; results = []; render(); }
+
+render();
+</script>
+</body>
+</html>
