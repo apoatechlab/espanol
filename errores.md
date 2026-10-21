@@ -49,9 +49,18 @@
 | 36 | **Soy** muy interesate | **Estoy** muy interesado | ser / estar + лексика | Заинтересован — состояние → estar. Форма: interesado (причастие). |
 | 37 | espero **que aprendo** | espero **aprender** | Инфинитив | Один и тот же субъект → инфинитив. Разные субъекты → que + subjuntivo (Espero que tú aprendas). |
 
+## Упражнение «¡Toma galleta!» (артикли, Gramática básica, гл. 5)
+
+| # | Было | Правильно | Тип | Правило |
+|---|------|-----------|-----|---------|
+| 38 | directamente a ? productores | directamente a **los** productores | Артикль | Конкретные, известные из контекста — с артиклем. |
+| 39 | trabaja con (las→unos) granjeros | trabaja con **unos** granjeros del sur de Brasil | Артикль | Вводим новых, неизвестных — unos. |
+| 40 | no solo vende **las** galletas | no solo vende galletas | Без артикля | Неопределённое количество, мн. ч. — без артикля. |
+| 41 | sino también **unos** bombones | sino también bombones | Без артикля | То же: перечисление товаров вообще — без артикля. |
+
 ## Повторяющиеся темы
 
-- **Артикль** — главная тема: профессия без артикля (Era consultor); общие понятия и конкретные места с артиклем (las mañanas, a la escuela, en la ciudad, en el futuro, la bici, hasta la mañana) — №5, №9, №13, №27, №28, №29, №31
+- **Артикль** — главная тема (+ упражнение ¡Toma galleta!: вводим новое — un/unos; известное — el/los; неопределённое кол-во — без артикля: vende galletas y bombones): профессия без артикля (Era consultor); общие понятия и конкретные места с артиклем (las mañanas, a la escuela, en la ciudad, en el futuro, la bici, hasta la mañana) — №5, №9, №13, №27, №28, №29, №31
 - **Тильда**: perdóname, también, aquí, línea, afición, difícil, mí; лишняя: méjor — №2, №7, №18, №22, №26, №33
 - **porque / por qué** — №4, №12
 - **desde hace** для того, что продолжается сейчас — №19, №32

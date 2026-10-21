@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Мои ошибки — тест</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* Quiz page, e-ink: grayscale only, block layout, no animation */
+.hero { border-top: 6px solid #000; border-bottom: 1px solid #000; padding: 0.6em 0 0.8em; margin-bottom: 1em; }
+.hero h1 { margin: 0.1em 0 0.2em; letter-spacing: -0.01em; }
+.hero .kicker { font-family: Helvetica, Arial, sans-serif; font-size: 0.7em; letter-spacing: 0.15em; text-transform: uppercase; }
+.bar { height: 10px; border: 2px solid #000; margin: 0.4em 0 0.3em; }
+.bar div { height: 100%; background: #000; }
+.stat { font-family: Helvetica, Arial, sans-serif; font-size: 0.8em; }
+.stat b { font-size: 1.1em; }
+.chip { display: inline-block; font-family: Helvetica, Arial, sans-serif; font-size: 0.7em; letter-spacing: 0.08em; text-transform: uppercase;
+  border: 1.5px solid #000; padding: 0.15em 0.55em; margin-bottom: 0.6em; }
+.q { font-size: 1.3em; line-height: 1.45; margin: 0.2em 0 0.9em; }
+.gap { display: inline-block; min-width: 2.6em; border-bottom: 3px solid #000; }
+.choice { display: block; width: 100%; text-align: left; font: inherit; font-size: 1.1em; color: #000; background: #fff;
+  border: 2px solid #000; border-radius: 0; padding: 0.55em 0.7em; margin: 0 0 0.55em; }
+.choice .L { display: inline-block; width: 1.6em; height: 1.6em; line-height: 1.6em; text-align: center; margin-right: 0.6em;
+  border: 2px solid #000; border-radius: 50%; font-family: Helvetica, Arial, sans-serif; font-size: 0.75em; font-weight: bold; vertical-align: middle; }
+.choice.right { border-width: 5px; font-weight: bold; }
+.choice.right .L { background: #000; color: #fff; }
+.choice.wrong { color: #555; text-decoration: line-through; border-style: dashed; }
+.choice.dim { color: #777; border-color: #999; }
+.explain { margin-top: 0.9em; padding: 0.7em 0.9em; border-left: 6px solid #000; background: #eee; }
+.explain .verdict { font-family: Helvetica, Arial, sans-serif; font-weight: bold; font-size: 0.9em; letter-spacing: 0.05em; text-transform: uppercase; display: block; margin-bottom: 0.3em; }
+.big { display: block; width: 100%; font: inherit; font-size: 1.1em; font-weight: bold; text-align: center; padding: 0.7em; margin: 0.9em 0 0.5em;
+  background: #000; color: #fff; border: 2px solid #000; border-radius: 0; }
+.big.light { background: #fff; color: #000; }
+.start p { margin: 0.4em 0 1em; }
+.score { font-size: 3.4em; font-weight: bold; line-height: 1; margin: 0.2em 0; }
+.score span { font-size: 0.4em; font-weight: normal; }
+.rv { padding: 0.5em 0; border-bottom: 1px solid #999; font-size: 0.95em; }
+.rv .yours { font-size: 0.85em; color: #444; }
+.topics td { padding: 0.2em 0.6em 0.2em 0; vertical-align: top; }
+.topics { border-collapse: collapse; font-size: 0.9em; margin-bottom: 1em; }
+</style>
+</head>
+<body>
+<p class="back"><a href="index.html">&larr; Все материалы</a></p>
+<div class="hero">
+  <div class="kicker">Español A2 · персональный тест</div>
+  <h1>Мои ошибки</h1>
+  <div id="head"></div>
+</div>
+<div id="app">Загрузка…</div>
+
+<script>
+// ES5 only — the Kindle browser is an old WebKit.
+// Each item: [group, question, correct, wrong1, wrong2, ...]. Options are shuffled at runtime.
+var RULES = {
+  gen_e:  ["Род: слова на -e", "Слова на -e бывают обоих родов. Женский: la clase, la noche, la leche, la llave, la gente. Мужской: el coche, el café, el parque. Проверяй по словарю и запоминай вместе с артиклем."],
+  gen_z:  ["Род: слова на -z", "la luz, la voz, la paz, la vez — женский род, поэтому poca luz, una voz. Но el lápiz, el pez — мужской."],
+  til_esd:["Тильда: esdrújulas", "Если ударение на третьем слоге с конца — тильда всегда. Императив + местоимение часто становится таким: perdona → perdóname, explica → explícame."],
+  til_agu:["Тильда: agudas", "Ударение на последнем слоге + слово кончается на гласную, -n или -s → тильда: también, aquí, afición, café, además. На другие согласные — без тильды: mejor, ciudad, trabajar."],
+  til_lla:["Тильда: llanas", "Ударение на предпоследнем слоге + слово кончается НЕ на гласную, -n, -s → тильда: difícil, fácil, móvil, árbol. Línea — тильда на í (lí-ne-a)."],
+  til_dia:["mí / mi, tú / tu", "mí, tú — местоимения (para mí, a mí me gusta, ¿tú vienes?). mi, tu — притяжательные (mi hija, tu email)."],
+  mudar:  ["mudarse", "Переезжать = mudarse: me mudé, te mudaste, nos mudamos. Antes de mudarme. Mudar без se — менять что-то (mudar la piel)."],
+  porque: ["porque / por qué", "porque (слитно, без тильды) — потому что, ответ. por qué (раздельно, с тильдой) — почему, в прямом и косвенном вопросе: ¿Por qué…? / No sé por qué…"],
+  prof:   ["Профессия без артикля", "Ser + профессия — без артикля: Soy desarrollador, Era consultor. С прилагательным — с артиклем: Es un médico muy bueno."],
+  almismo:["al mismo tiempo", "Устойчивое выражение: al mismo tiempo (a + el = al). Так же: voy al trabajo, al parque."],
+  pasear: ["pasear al perro", "Выгуливать собаку = pasear al perro / sacar al perro. Pasear con alguien — гулять вместе с кем-то. Pasear por el parque — гулять по месту."],
+  gral:   ["Артикль: общие понятия", "Когда говоришь о чём-то в целом (все утра, зимы, жизнь, кофе вообще), артикль нужен: las mañanas, los inviernos, la vida, me encanta el café."],
+  transp: ["en bici, строчные буквы", "Транспорт: en bici, en tren, en metro — без артикля и со строчной. Но a pie. Дни недели, месяцы, языки и национальности тоже со строчной: lunes, octubre, español."],
+  concord:["Согласование указательных", "Указательное согласуется с существительным в роде и числе: aquella época, aquellos años, estos zapatos, esta ciudad."],
+  manana: ["mañana / la mañana", "mañana без артикля — завтра. la mañana — утро (por la mañana, de la mañana). la madrugada — поздняя ночь, до рассвета: hasta la madrugada."],
+  gustar: ["gustar во мн. ч.", "gustar согласуется с тем, ЧТО нравится: me gusta el café, me gustan los inviernos, me gustaban las fiestas. С инфинитивами — ед. ч.: me gusta bailar y cantar."],
+  tu_ud:  ["tú / usted", "Начал на «tú» (¡Hola, Anabel!) — держи tú: tu email, te escribo, ¿cómo estás? Usted (su, le, está) — с незнакомыми и официально (señor García)."],
+  es_inf: ["Es + прил. + инфинитив", "Es importante conocernos, Es difícil hablar, Es necesario practicar — без para и de: инфинитив здесь подлежащее."],
+  desde:  ["hace / desde hace", "desde hace + срок — действие длится до сих пор (Vivo aquí desde hace 3 años). hace + срок — момент в прошлом (Llegué hace 3 años). desde + дата/момент (desde 2023)."],
+  orto:   ["Орфография", "Запомни написание: ciudad (ci-u-dad), desarrollador (de-sa-rro-lla-dor), financiero (не financial)."],
+  genpl:  ["Мужской род мн. ч.", "Для смешанной группы или о себе (мужчина) — мужской род: mis compañeros y yo somos teletrabajadores, mi mujer y yo somos rusos."],
+  conect: ["además / sin embargo", "además — добавляет мысль в ту же сторону. sin embargo — противопоставляет. por eso — следствие."],
+  lugar:  ["Артикль: конкретное место", "Конкретное известное место — с артиклем: a la escuela, al trabajo, al parque, en la ciudad. Исключения без артикля: en casa, en clase."],
+  afic:   ["Артикль: увлечения", "Хобби и вещи в роли подлежащего — с артиклем: mi afición es la bici, me gusta el ciclismo, mi pasión es la música."],
+  de_tipo:["de для типа предмета", "Тип предмета через другое существительное — с de: bici de carretera, clase de español, tienda de galletas, zumo de naranja."],
+  tiempo: ["Артикль: en el futuro", "en el futuro, en el pasado, la próxima semana, el año que viene — с артиклем."],
+  en_modo:["en pasado, en español", "Время и язык речи — с en: hablar en pasado, escribir en español, está en presente."],
+  interes:["estoy interesado", "Заинтересован — состояние → estar interesado (причастие). Интересный — ser interesante: el libro es interesante."],
+  inf:    ["Один субъект → инфинитив", "Если я надеюсь/хочу и я же делаю — инфинитив: espero aprender, quiero hablar. Если субъекты разные — que + subjuntivo: espero que tú aprendas, quiero que mi hija hable."],
+  cero:   ["Без артикля: неопределённое кол-во", "Неисчисляемое или мн. ч. без уточнения (какое-то количество, вообще) — без артикля: vende galletas y bombones, con leche y harina, ¿tienes hijos?"],
+  def:    ["Артикль: известное, конкретное", "Конкретное, уже известное или уточнённое — с артиклем: las galletas de Enriqueta, el azúcar (тот, что она использует), a los productores. Unos/una — вводим новое: una ONG, unos granjeros del sur de Brasil."],
+  pose:   ["Без артикля с este/su", "С указательными и притяжательными перед словом артикль не ставится: compra estos productos, en su tienda, de su propia granja. Но: una amiga mía."]
+};
+
+var B = "— без артикля";
+var BANK = [
+ ["gen_e","Ahora estoy haciendo ___ clase de español.","una","un"],
+ ["gen_e","___ clase de hoy ha sido muy divertida.","La","El"],
+ ["gen_e","Anoche salimos y ___ noche fue muy larga.","la","el"],
+ ["gen_e","¿Dónde está ___ llave del piso?","la","el"],
+ ["gen_e","___ leche de Enriqueta es de su propia granja.","La","El"],
+ ["gen_e","Para ir al trabajo uso ___ coche.","el","la"],
+
+ ["gen_z","En Moscú en invierno hay ___ luz.","poca","poco"],
+ ["gen_z","Apaga ___ luz, por favor.","la","el"],
+ ["gen_z","Mi hija tiene ___ voz muy bonita.","una","un"],
+ ["gen_z","La luz de Barcelona es muy ___.","bonita","bonito"],
+ ["gen_z","Necesito ___ lápiz para escribir.","un","una"],
+
+ ["til_esd","Выберите правильное написание:","perdóname","perdoname","perdonáme"],
+ ["til_esd","Выберите правильное написание:","explícame","explicame","explicáme"],
+ ["til_esd","Выберите правильное написание:","levántate","levantate","levantáte"],
+ ["til_esd","Выберите правильное написание:","dímelo","dimelo","dimeló"],
+ ["til_esd","Выберите правильное написание:","cómpralo","compralo","comprálo"],
+
+ ["til_agu","Выберите правильное написание:","también","tambien","tambíen"],
+ ["til_agu","Выберите правильное написание:","aquí","aqui","áqui"],
+ ["til_agu","Выберите правильное написание:","afición","aficion","afíción"],
+ ["til_agu","Выберите правильное написание:","además","ademas","ádemas"],
+ ["til_agu","Выберите правильное написание:","mejor","méjor","mejór"],
+ ["til_agu","Выберите правильное написание:","ciudad","ciudád","cíudad"],
+
+ ["til_lla","Выберите правильное написание:","difícil","dificil","dificíl"],
+ ["til_lla","Выберите правильное написание:","fácil","facil","facíl"],
+ ["til_lla","Выберите правильное написание:","en línea","en linea","en linéa"],
+ ["til_lla","Выберите правильное написание:","móvil","movil","movíl"],
+
+ ["til_dia","Hablar en pasado es difícil para ___.","mí","mi"],
+ ["til_dia","___ hija tiene cinco años.","Mi","Mí"],
+ ["til_dia","A ___ me encanta el café.","mí","mi"],
+ ["til_dia","Hola, Anabel, gracias por ___ email.","tu","tú"],
+ ["til_dia","¿Y ___ qué haces los fines de semana?","tú","tu"],
+
+ ["mudar","Antes de ___ a Barcelona, vivía en Moscú.","mudarme","mudar","mudarse"],
+ ["mudar","Mi familia y yo ___ a España en 2023.","nos mudamos","mudamos","se mudamos"],
+ ["mudar","¿Cuándo ___ a tu piso nuevo?","te mudaste","mudaste","se mudaste"],
+ ["mudar","Mis padres quieren ___ a la costa.","mudarse","mudar","mudarlos"],
+ ["mudar","Выберите правильную фразу:","Me mudé a Barcelona hace tres años.","Mudé a Barcelona hace tres años.","Me mudé en Barcelona hace tres años."],
+
+ ["porque","Trabajaba muchísimo ___ tenía dos trabajos.","porque","por que","por qué"],
+ ["porque","¿___ estudias español?","Por qué","Porque","Por que"],
+ ["porque","— ¿Por qué vives en Barcelona? — ___ me gusta el sol.","Porque","Por qué","Por que"],
+ ["porque","No sé ___ no ha venido Marta.","por qué","porque","por que"],
+ ["porque","Salíamos mucho ___ teníamos muchos amigos.","porque","por qué","por que"],
+
+ ["prof","Era ___ consultor en una gran empresa.",B,"un","el"],
+ ["prof","Soy ___ desarrollador de software.",B,"un","el"],
+ ["prof","Mi mujer es ___ profesora.",B,"una","la"],
+ ["prof","Mi padre es ___ médico muy bueno.","un",B,"el"],
+ ["prof","Выберите правильную фразу:","Quiero ser ingeniero.","Quiero ser un ingeniero.","Quiero ser el ingeniero."],
+
+ ["almismo","Era consultor y ___ mismo tiempo desarrollaba mi startup.","al","en el","a el","en"],
+ ["almismo","No puedo hablar por teléfono y conducir ___.","al mismo tiempo","en el mismo tiempo","a mismo tiempo"],
+ ["almismo","Después del desayuno iba ___ trabajo.","al","a el","en el"],
+ ["almismo","Llegamos ___ mismo tiempo que ellos.","al","en el","a"],
+
+ ["pasear","Cada mañana paseaba ___ mi perro durante 30 minutos.","a","con","por"],
+ ["pasear","Hoy te toca sacar ___ perro.","al","el","con el"],
+ ["pasear","Los domingos me gusta pasear ___ mi mujer por la playa.","con","a","al"],
+ ["pasear","Paseamos ___ el parque toda la tarde.","por","a","al"],
+ ["pasear","Выберите фразу «выгуливать собаку»:","pasear al perro","pasear con el perro","pasear el perro"],
+
+ ["gral","En Moscú ___ mañanas eran más tranquilas.","las",B,"unas"],
+ ["gral","___ inviernos en Moscú son muy fríos.","Los",B,"Unos"],
+ ["gral","___ vida en Barcelona es más tranquila.","La",B,"Una"],
+ ["gral","Me encanta ___ café de la mañana.","el",B,"un"],
+ ["gral","No me gustan ___ lunes.","los",B,"unos"],
+
+ ["transp","Voy al trabajo ___ bici.","en","en la","con"],
+ ["transp","Выберите правильное написание:","Puedo salir en bici todo el año.","Puedo salir en Bici todo el año.","Puedo salir en la Bici todo el año."],
+ ["transp","Mi hija va ___ pie al colegio.","a","en","con"],
+ ["transp","Выберите правильное написание:","Nos vemos el lunes.","Nos vemos el Lunes.","Nos vemos en Lunes."],
+ ["transp","Выберите правильное написание:","Estudio español desde octubre.","Estudio Español desde Octubre.","Estudio español desde Octubre."],
+
+ ["concord","En ___ época yo vivía en Moscú.","aquella","aquellas","aquel"],
+ ["concord","___ años fueron muy buenos.","Aquellos","Aquellas","Aquel"],
+ ["concord","¿Te gustan ___ zapatos?","estos","estas","este"],
+ ["concord","___ ciudad es muy bonita.","Esta","Este","Estas"],
+ ["concord","En ___ tiempos no había internet.","aquellos","aquellas","aquella"],
+
+ ["manana","Bailábamos hasta ___.","la madrugada","madrugada","mañana"],
+ ["manana","___ tengo clase de español (завтра).","Mañana","La mañana","En la mañana"],
+ ["manana","Trabajo por ___ mañana.","la",B,"una"],
+ ["manana","Me levanto a las siete de ___ mañana.","la",B,"una"],
+ ["manana","Nos vemos ___ por la tarde (завтра).","mañana","la mañana","por la mañana"],
+
+ ["gustar","No me ___ nada los inviernos allí.","gustaban","gustaba","gustabais"],
+ ["gustar","A mi hija le ___ los dibujos animados.","gustan","gusta","gusto"],
+ ["gustar","Nos ___ mucho Barcelona.","gusta","gustan","gustamos"],
+ ["gustar","¿Te ___ las galletas de Enriqueta?","gustan","gusta","gustas"],
+ ["gustar","Me ___ bailar y cantar.","gusta","gustan","gusto"],
+ ["gustar","Me ___ los bombones de chocolate.","encantan","encanta","encanto"],
+
+ ["tu_ud","¡Hola, Anabel! Gracias por ___ email.","tu","su","tú"],
+ ["tu_ud","Hola, Marta, ¿cómo ___?","estás","está","están"],
+ ["tu_ud","Querida Ana: ___ escribo para presentarme.","te","le","os"],
+ ["tu_ud","Buenos días, señor García. ¿En qué ___ puedo ayudar?","le","te","lo"],
+ ["tu_ud","Hola, Pablo, ¿qué tal ___ fin de semana?","tu","su","tú"],
+
+ ["es_inf","Es importante ___ conocernos.",B+" (предлога)","para","de"],
+ ["es_inf","Para mí es difícil ___ hablar en pasado.",B+" (предлога)","de","para"],
+ ["es_inf","Es necesario ___ practicar cada día.",B+" (предлога)","de","para"],
+ ["es_inf","Выберите правильную фразу:","Es bueno dormir ocho horas.","Es bueno para dormir ocho horas.","Es bueno de dormir ocho horas."],
+ ["es_inf","Выберите правильную фразу:","Es fácil aprender palabras nuevas.","Es fácil de aprender palabras nuevas.","Es fácil para aprender palabras nuevas."],
+
+ ["desde","Vivo en Barcelona ___ tres años.","desde hace","hace","desde"],
+ ["desde","Llegué a Barcelona ___ tres años.","hace","desde hace","desde"],
+ ["desde","Estudio español ___ un año.","desde hace","hace","desde"],
+ ["desde","Empecé a estudiar español ___ un año.","hace","desde hace","desde"],
+ ["desde","Vivimos en Gràcia ___ 2023.","desde","desde hace","hace"],
+ ["desde","Conozco a Enriqueta ___ mucho tiempo.","desde hace","hace","desde"],
+
+ ["orto","Выберите правильное написание:","desarrollador","deserallodor","desarollador","desarrolador"],
+ ["orto","Выберите правильное написание:","ciudad","cuidad","ciuadad"],
+ ["orto","Trabajo en el sector ___.","financiero","financial","finanzas"],
+ ["orto","Vivo en ___ desde hace tres años.","la ciudad","la cuidad","ciudad"],
+ ["orto","Soy ___ de software.","desarrollador","desarollador","desarrolador"],
+
+ ["genpl","Mis compañeros y yo somos ___.","teletrabajadores","teletrabajadoras","teletrabajador"],
+ ["genpl","Mi mujer y yo somos ___.","rusos","rusas","ruso"],
+ ["genpl","Mis hijos (un niño y una niña) son muy ___.","pequeños","pequeñas","pequeño"],
+ ["genpl","Muchos ___ de mi empresa trabajan desde casa.","trabajadores","trabajadoras","trabajador"],
+
+ ["conect","Barcelona tiene mucho sol. ___, la comida es buenísima.","Además","Sin embargo","Por eso"],
+ ["conect","Me encantaba Moscú. ___, no me gustaban los inviernos.","Sin embargo","Además","Por eso"],
+ ["conect","Trabajo mucho. ___, estudio español por las tardes.","Además","Sin embargo","Porque"],
+ ["conect","El piso es pequeño. ___, es muy luminoso.","Sin embargo","Además","Por eso"],
+ ["conect","Me encanta el mar; ___ vivo en Barcelona.","por eso","sin embargo","además"],
+
+ ["lugar","Cada mañana voy ___ escuela con mi hija.","a la","a","en"],
+ ["lugar","Vivo ___ ciudad desde hace tres años.","en la","en","a la"],
+ ["lugar","Los sábados vamos ___ parque.","al","a","en"],
+ ["lugar","Hoy trabajo en ___ casa.",B,"la","una"],
+ ["lugar","Ahora no puedo hablar, estoy en ___ clase.",B,"la","una"],
+
+ ["afic","Mi afición es ___ bici.","la",B,"una"],
+ ["afic","Mi deporte favorito es ___ fútbol.","el",B,"un"],
+ ["afic","Me gusta mucho ___ ciclismo.","el",B,"un"],
+ ["afic","Mi pasión es ___ música.","la",B,"una"],
+
+ ["de_tipo","Tengo una bici ___ carretera.","de",B,"para"],
+ ["de_tipo","Ahora hago una clase ___ español.","de","en",B],
+ ["de_tipo","Es una tienda ___ galletas.","de","con",B],
+ ["de_tipo","Me encanta el zumo ___ naranja.","de","con",B],
+
+ ["tiempo","___ futuro quiero hablar español muy bien.","En el","En","Al"],
+ ["tiempo","___ pasado vivía en Moscú.","En el","En","Al"],
+ ["tiempo","Nos vemos ___ próxima semana.","la",B,"una"],
+ ["tiempo","___ año que viene voy a hacer el B1.","El",B,"Un"],
+
+ ["en_modo","Me cuesta hablar ___ pasado.","en",B,"de"],
+ ["en_modo","¿Puedes escribirlo ___ español?","en",B,"de"],
+ ["en_modo","Este verbo está ___ presente.","en",B,"de"],
+ ["en_modo","Mi hija habla ___ catalán en el colegio.","en","de","a"],
+
+ ["interes","___ muy interesado en el curso de A2.","Estoy","Soy","Tengo"],
+ ["interes","Este libro es muy ___.","interesante","interesado","interesate"],
+ ["interes","Mi hija está muy ___ en los dinosaurios.","interesada","interesante","interesado"],
+ ["interes","La película ___ muy interesante.","es","está","tiene"],
+ ["interes","Выберите правильную фразу:","Estoy muy interesado en el curso.","Soy muy interesado en el curso.","Soy muy interesate en el curso."],
+
+ ["inf","Espero ___ mucho en este curso.","aprender","que aprendo","que aprenda"],
+ ["inf","Espero que tú ___ mucho.","aprendas","aprender","aprendes"],
+ ["inf","Quiero ___ español con fluidez.","hablar","que hablo","que hable"],
+ ["inf","Quiero que mi hija ___ español.","hable","hablar","habla"],
+ ["inf","Necesito ___ más los tiempos del pasado.","practicar","que practico","que practique"],
+
+ ["cero","En su tienda no solo vende ___ galletas.",B,"las","unas"],
+ ["cero","…sino también ___ bombones de chocolate de Guatemala.",B,"unos","los"],
+ ["cero","Las galletas están hechas con ___ leche y ___ harina integral.",B,"la … la","una … una"],
+ ["cero","¿Tienes ___ hijos?",B,"los","unos"],
+ ["cero","En el mercado compro ___ fruta y verdura.",B,"la","una"],
+ ["cero","Vende galletas, bombones, ___ muesli y miel.",B,"el","un"],
+
+ ["def","Enriqueta compra estos productos directamente a ___ productores.","los",B,"unos"],
+ ["def","…excepto ___ azúcar, que lo compra a una ONG.","el",B,"un"],
+ ["def","___ galletas de Enriqueta están hechas con productos ecológicos.","Las",B,"Unas"],
+ ["def","Trabaja con ___ granjeros del sur de Brasil.","unos",B,"los"],
+ ["def","…y ___ leche, que es de su propia granja.","la",B,"una"],
+ ["def","Enriqueta es ___ amiga mía que tiene una tienda.","una","la",B],
+
+ ["pose","Enriqueta compra ___ estos productos directamente.",B,"los","unos"],
+ ["pose","En ___ su tienda no solo vende galletas.",B,"la","una"],
+ ["pose","La leche es de ___ su propia granja.",B,"la","una"],
+ ["pose","Seguramente la conocéis: es ___ tienda de galletas de la Avenida de la Libertad.","la","una",B]
+];
+
+var LETTERS = ["A","B","C","D","E"];
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+var deck = [], pos = 0, right = 0, answered = false, wrong = [], cur = null;
+
+function header() {
+  var n = deck.length, pct = n ? Math.round(100 * pos / n) : 0;
+  $("head").innerHTML = n && pos < n
+    ? '<div class="bar"><div style="width:' + pct + '%"></div></div><div class="stat">Вопрос <b>' + (pos + 1) + '</b> из ' + n + ' · верно: <b>' + right + '</b></div>'
+    : '<div class="stat">' + BANK.length + ' вопросов по ' + countGroups() + ' темам из трёх разборов</div>';
+}
+function countGroups() { var n = 0; for (var k in RULES) n++; return n; }
+
+function startScreen() {
+  deck = []; header();
+  var saved = store("err_wrong"), sv = saved ? saved.split(",") : [];
+  var h = '<div class="start"><p>Вопросы перемешаны. На каждую ошибку — несколько разных заданий. После ответа — правило.</p>';
+  h += '<button class="big" onclick="begin(20)">20 вопросов</button>';
+  h += '<button class="big light" onclick="begin(50)">50 вопросов</button>';
+  h += '<button class="big light" onclick="begin(0)">Все ' + BANK.length + '</button>';
+  if (sv.length && sv[0] !== "") h += '<button class="big light" onclick="beginWrong()">Повторить мои ошибки (' + sv.length + ')</button>';
+  h += '</div><h2>Темы</h2><table class="topics">';
+  for (var k in RULES) h += '<tr><td>•</td><td>' + RULES[k][0] + '</td></tr>';
+  $("app").innerHTML = h + '</table>';
+}
+
+function build(idx) {
+  deck = [];
+  for (var i = 0; i < idx.length; i++) {
+    var it = BANK[idx[i]], opts = [];
+    for (var j = 2; j < it.length; j++) opts.push({ t: it[j], ok: j === 2 });
+    deck.push({ id: idx[i], g: it[0], q: it[1], opts: shuffle(opts), c: it[2] });
+  }
+  pos = 0; right = 0; wrong = []; render();
+}
+function begin(n) {
+  var all = []; for (var i = 0; i < BANK.length; i++) all.push(i);
+  shuffle(all); build(n ? all.slice(0, n) : all);
+}
+function beginWrong() {
+  var sv = (store("err_wrong") || "").split(","), idx = [];
+  for (var i = 0; i < sv.length; i++) { var n = parseInt(sv[i], 10); if (n >= 0 && n < BANK.length) idx.push(n); }
+  build(shuffle(idx));
+}
+
+function render() {
+  answered = false; header();
+  if (pos >= deck.length) { result(); return; }
+  cur = deck[pos];
+  var h = '<div class="chip">' + RULES[cur.g][0] + '</div><p class="q">' + esc(cur.q).replace(/___/g, '<span class="gap">&nbsp;</span>') + '</p>';
+  for (var i = 0; i < cur.opts.length; i++)
+    h += '<button class="choice" id="c' + i + '" onclick="pick(' + i + ')"><span class="L">' + LETTERS[i] + '</span>' + esc(cur.opts[i].t) + '</button>';
+  $("app").innerHTML = h + '<div id="fb"></div>';
+}
+
+function pick(k) {
+  if (answered) return; answered = true;
+  var ok = cur.opts[k].ok;
+  for (var i = 0; i < cur.opts.length; i++) {
+    var b = $("c" + i); b.disabled = true;
+    b.className = "choice " + (cur.opts[i].ok ? "right" : (i === k ? "wrong" : "dim"));
+  }
+  if (ok) right++; else wrong.push({ id: cur.id, q: cur.q, c: cur.c, y: cur.opts[k].t });
+  var last = pos === deck.length - 1;
+  $("fb").innerHTML = '<div class="explain"><span class="verdict">' + (ok ? "✓ Верно" : "✗ Правильно: " + esc(cur.c)) + '</span>' + RULES[cur.g][1] + '</div>' +
+    '<button class="big" onclick="next()">' + (last ? "Результат" : "Дальше →") + '</button>';
+  header();
+}
+function next() { pos++; render(); window.scrollTo(0, 0); }
+
+function fill(q, c) {
+  if (q.indexOf("___") < 0) return esc(c);
+  var parts = c.indexOf(" … ") >= 0 ? c.split(" … ") : [c], k = 0;
+  return esc(q).replace(/___/g, function () { var p = parts[Math.min(k++, parts.length - 1)]; return "<b>" + (p.indexOf("—") === 0 ? "(—)" : esc(p)) + "</b>"; });
+}
+
+function result() {
+  var n = deck.length, ids = [];
+  for (var i = 0; i < wrong.length; i++) ids.push(wrong[i].id);
+  store("err_wrong", ids.join(","));
+  var pct = Math.round(100 * right / n);
+  var h = '<div class="score">' + right + '<span> / ' + n + '</span></div><p>' + pct + '% верно. ' +
+    (pct >= 85 ? "Отлично — эти ошибки уходят." : pct >= 60 ? "Хорошо. Повтори ошибки ниже." : "Есть над чем поработать — пройди ошибки ещё раз.") + '</p>';
+  if (wrong.length) {
+    h += '<button class="big" onclick="beginWrong()">Повторить ошибки (' + wrong.length + ')</button><h2>Разбор</h2>';
+    for (var j = 0; j < wrong.length; j++)
+      h += '<div class="rv">' + fill(wrong[j].q, wrong[j].c) + '<div class="yours">Ваш ответ: ' + esc(wrong[j].y) + '</div></div>';
+  }
+  h += '<button class="big light" onclick="startScreen()">В начало</button>';
+  $("app").innerHTML = h;
+  window.scrollTo(0, 0);
+}
+
+startScreen();
+</script>
+</body>
+</html>
